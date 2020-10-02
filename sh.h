@@ -1,4 +1,4 @@
-#include "get_path.h"
+#include "./utils/get_path.h"
 
 int pid;
 char *which(char *command, struct pathelement *pathlist);
