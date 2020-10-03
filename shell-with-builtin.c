@@ -87,9 +87,13 @@ int main(int argc, char **argv, char **envp)
 			}
 			else if (pid == 0)
 			{ /* child */
-				execlp(buf, buf, (char *)0);
+				struct pathelement *p = get_path();
+				char *cmd = which(arg[0], p);
+				execve(cmd, arg, envp);
 				printf("couldn't execute: %s\n", buf);
-				exit(127);
+				free(p);
+				free(cmd);
+				//exit(127);
 			}
 
 			/* parent */
