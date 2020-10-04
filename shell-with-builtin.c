@@ -49,7 +49,7 @@ int main(int argc, char **argv, char **envp)
 			printf("Executing built-in [cd]\n");
 			printf("%s\n", arg[1]);
 			int success = chdir(arg[1]);
-			if (success) {
+			if (success >= 0) {
 				printf("Directory change successful\n");
 			} else {
 				printf("Directory change failed\n");
