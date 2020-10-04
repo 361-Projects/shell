@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv, char **envp)
 {
+	char prompt[MAXLINE] = ">> ";
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
 	char *ptr;
@@ -14,7 +15,7 @@ int main(int argc, char **argv, char **envp)
 	pid_t pid;
 	int status, i, arg_no;
 
-	printf(">> "); /* print prompt (printf requires %% to print %) */
+	printf("%s", prompt); /* print prompt (printf requires %% to print %) */
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
