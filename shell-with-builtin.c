@@ -43,6 +43,18 @@ int main(int argc, char **argv, char **envp)
 			printf("%s\n", ptr);
 			free(ptr);
 		}
+		else if (strcmp(arg[0], "cd") == 0)
+		{
+			// cd cmd
+			printf("Executing built-in [cd]\n");
+			printf("%s\n", arg[1]);
+			int success = chdir(arg[1]);
+			if (success) {
+				printf("Directory change successful\n");
+			} else {
+				printf("Directory change failed\n");
+			}
+		}
 		else if (strcmp(arg[0], "which") == 0)
 		{ // built-in command which
 			struct pathelement *p, *tmp;
