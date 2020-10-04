@@ -75,6 +75,10 @@ int main(int argc, char **argv, char **envp)
 				free(tmp);
 			}
 		}
+		else if (strcmp(arg[0], "pid") == 0) {
+			printf("Shell PID: %d\n", getpid());
+			goto nextprompt;
+		}
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
 			exit(0);
