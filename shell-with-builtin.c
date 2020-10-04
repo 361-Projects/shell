@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv, char **envp)
 {
+	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
 	char *ptr;
@@ -76,7 +77,7 @@ int main(int argc, char **argv, char **envp)
 			}
 		}
 		else if (strcmp(arg[0], "pid") == 0) {
-			printf("Shell PID: %d\n", getpid());
+			printf("sssh PID: %d\n", getpid());
 			goto nextprompt;
 		}
 		else if (strcmp(arg[0], "exit") == 0) {
@@ -87,22 +88,31 @@ int main(int argc, char **argv, char **envp)
 		{
 			if ((pid = fork()) < 0)
 			{
-				printf("fork error\n");
+				printf("sssh: fork error\n");
 			}
 			else if (pid == 0)
 			{ /* child */
 				struct pathelement *p = get_path();
 				char *cmd = which(arg[0], p);
+				char flag = 1;
+
+				if (cmd == NULL) {
+					cmd = arg[0];
+					flag = !flag;
+				}
+					
+
 				execve(cmd, arg, envp);
-				printf("couldn't execute: %s\n", buf);
+				printf("sssh: couldn't execute: %s\nYou are bad and you should feal bad.\n", buf);
 				free(p);
-				free(cmd);
-				//exit(127);
+				if (flag)
+					free(cmd);
+				exit(127);
 			}
 
 			/* parent */
 			if ((pid = waitpid(pid, &status, 0)) < 0)
-				printf("waitpid error\n");
+				printf("sssh: waitpid error\n");
 		}
 
 	nextprompt:
