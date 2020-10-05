@@ -7,7 +7,8 @@
 
 int main(int argc, char **argv, char **envp)
 {
-	char prompt[MAXLINE] = ">> ";
+	const char *prompt = ">> ";
+	char prompt_prefix[MAXLINE] = "";
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
 	char *ptr;
@@ -15,7 +16,7 @@ int main(int argc, char **argv, char **envp)
 	pid_t pid;
 	int status, i, arg_no;
 
-	printf("%s", prompt); /* print prompt (printf requires %% to print %) */
+	printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -37,7 +38,13 @@ int main(int argc, char **argv, char **envp)
 		if (arg[0] == NULL) // "blank" command line
 			goto nextprompt;
 
-		if (strcmp(arg[0], "pwd") == 0)
+		if (strcmp(arg[0], "prompt") == 0)
+		{
+			//strcpy(prompt_prefix, set_prompt_prefix(arg));
+			char** toks = strtok(arg, " ");
+    		printf("%s", toks);
+		}
+		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
 			printf("Executing built-in [pwd]\n");
 			ptr = getcwd(NULL, 0);
