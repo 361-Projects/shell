@@ -8,6 +8,10 @@
 int main(int argc, char **argv, char **envp)
 {
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
+
+	const char *prompt = ">> ";
+	char prompt_prefix[MAXLINE] = "";
+
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
 	char *ptr;
@@ -15,7 +19,7 @@ int main(int argc, char **argv, char **envp)
 	pid_t pid;
 	int status, i, arg_no;
 
-	printf(">> "); /* print prompt (printf requires %% to print %) */
+	printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -37,12 +41,30 @@ int main(int argc, char **argv, char **envp)
 		if (arg[0] == NULL) // "blank" command line
 			goto nextprompt;
 
-		if (strcmp(arg[0], "pwd") == 0)
+		if (strcmp(arg[0], "prompt") == 0)
+		{
+			//strcpy(prompt_prefix, set_prompt_prefix(arg));
+			char** toks = strtok(arg, " ");
+    		printf("%s", toks);
+		}
+		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
 			printf("Executing built-in [pwd]\n");
 			ptr = getcwd(NULL, 0);
 			printf("%s\n", ptr);
 			free(ptr);
+		}
+		else if (strcmp(arg[0], "cd") == 0)
+		{
+			// cd cmd
+			printf("Executing built-in [cd]\n");
+			printf("%s\n", arg[1]);
+			int success = chdir(arg[1]);
+			if (success >= 0) {
+				printf("Directory change successful\n");
+			} else {
+				printf("Directory change failed\n");
+			}
 		}
 		else if (strcmp(arg[0], "which") == 0)
 		{ // built-in command which
