@@ -7,6 +7,11 @@
 
 int main(int argc, char **argv, char **envp)
 {
+	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
+
+	const char *prompt = ">> ";
+	char prompt_prefix[MAXLINE] = "";
+
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
 	char *ptr;
@@ -14,7 +19,7 @@ int main(int argc, char **argv, char **envp)
 	pid_t pid;
 	int status, i, arg_no;
 
-	printf(">> "); /* print prompt (printf requires %% to print %) */
+	printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -36,12 +41,30 @@ int main(int argc, char **argv, char **envp)
 		if (arg[0] == NULL) // "blank" command line
 			goto nextprompt;
 
-		if (strcmp(arg[0], "pwd") == 0)
+		if (strcmp(arg[0], "prompt") == 0)
+		{
+			//strcpy(prompt_prefix, set_prompt_prefix(arg));
+			char** toks = strtok(arg, " ");
+    		printf("%s", toks);
+		}
+		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
 			printf("Executing built-in [pwd]\n");
 			ptr = getcwd(NULL, 0);
 			printf("%s\n", ptr);
 			free(ptr);
+		}
+		else if (strcmp(arg[0], "cd") == 0)
+		{
+			// cd cmd
+			printf("Executing built-in [cd]\n");
+			printf("%s\n", arg[1]);
+			int success = chdir(arg[1]);
+			if (success >= 0) {
+				printf("Directory change successful\n");
+			} else {
+				printf("Directory change failed\n");
+			}
 		}
 		else if (strcmp(arg[0], "which") == 0)
 		{ // built-in command which
@@ -76,7 +99,7 @@ int main(int argc, char **argv, char **envp)
 			}
 		}
 		else if (strcmp(arg[0], "pid") == 0) {
-			printf("Shell PID: %d\n", getpid());
+			printf("sssh PID: %d\n", getpid());
 			goto nextprompt;
 		}
 		else if (strcmp(arg[0], "exit") == 0) {
@@ -87,22 +110,31 @@ int main(int argc, char **argv, char **envp)
 		{
 			if ((pid = fork()) < 0)
 			{
-				printf("fork error\n");
+				printf("sssh: fork error\n");
 			}
 			else if (pid == 0)
 			{ /* child */
 				struct pathelement *p = get_path();
 				char *cmd = which(arg[0], p);
+				char flag = 1;
+
+				if (cmd == NULL) {
+					cmd = arg[0];
+					flag = !flag;
+				}
+					
+
 				execve(cmd, arg, envp);
-				printf("couldn't execute: %s\n", buf);
+				printf("sssh: couldn't execute: %s\nYou are bad and you should feal bad.\n", buf);
 				free(p);
-				free(cmd);
-				//exit(127);
+				if (flag)
+					free(cmd);
+				exit(127);
 			}
 
 			/* parent */
 			if ((pid = waitpid(pid, &status, 0)) < 0)
-				printf("waitpid error\n");
+				printf("sssh: waitpid error\n");
 		}
 
 	nextprompt:
