@@ -10,7 +10,7 @@ int main(int argc, char **argv, char **envp)
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
 	const char *prompt = ">> ";
-	char prompt_prefix[MAXLINE] = "";
+	char* prompt_prefix = NULL;
 
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
@@ -19,7 +19,10 @@ int main(int argc, char **argv, char **envp)
 	pid_t pid;
 	int status, i, arg_no;
 
-	printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+	if (prompt_prefix != NULL)
+		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+	else
+		printf("%s", prompt);
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -43,9 +46,9 @@ int main(int argc, char **argv, char **envp)
 
 		if (strcmp(arg[0], "prompt") == 0)
 		{
-			//strcpy(prompt_prefix, set_prompt_prefix(arg));
-			char** toks = strtok(arg, " ");
-    		printf("%s", toks);
+			set_prompt_prefix(arg, &prompt_prefix);
+			//char* toks = strtok(arg, " "); // do it by len of arg; grab rest of user input from buff after the word "prompt" if too big
+    		//printf("%s", toks);
 		}
 		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
