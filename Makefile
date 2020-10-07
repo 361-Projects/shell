@@ -8,7 +8,7 @@ sssh: get_path.o which.o set_prompt_prefix.o list.o where.o printenv.o setenv.o 
 	$(CC) $< -c 
 
 clean:
-	rm -rf shell-with-builtin.o get_path.o which.o set_prompt_prefix.o list.o where.o printenv.o setenv.o sssh
+	rm -rf *.o sssh
 
 run: sssh
 	./sssh
