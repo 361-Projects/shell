@@ -62,9 +62,14 @@ int main(int argc, char **argv, char **envp)
 		{
 			// cd cmd
 			printf("Executing built-in [cd]\n");
-			printf("%s\n", arg[1]);
 			int success;
-			if (strcmp(arg[1], "-") == 0) {
+			if (arg[1] == NULL) {
+				// cd with nothing passed in
+				free(last_dir);
+				last_dir = getcwd(NULL, 0);
+				success = chdir(getenv("HOME"));
+			}
+			else if (strcmp(arg[1], "-") == 0) {
 				// cd to previous dir
 				success = chdir(last_dir);
 				free(last_dir);
