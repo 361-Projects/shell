@@ -16,6 +16,7 @@ int main(int argc, char **argv, char **envp)
 	char *arg[MAXARGS]; // an array of tokens
 	char *ptr;
 	char *pch;
+	char *last_dir = getcwd(NULL, 0);
 	pid_t pid;
 	int status, i, arg_no;
 
@@ -62,7 +63,18 @@ int main(int argc, char **argv, char **envp)
 			// cd cmd
 			printf("Executing built-in [cd]\n");
 			printf("%s\n", arg[1]);
-			int success = chdir(arg[1]);
+			int success;
+			if (strcmp(arg[1], "-") == 0) {
+				// cd to previous dir
+				success = chdir(last_dir);
+				free(last_dir);
+				last_dir = getcwd(NULL, 0);
+			} else {
+				// normal path in cd
+				free(last_dir);
+				last_dir = getcwd(NULL, 0);
+				success = chdir(arg[1]);
+			}
 			if (success >= 0) {
 				printf("Directory change successful\n");
 			} else {
