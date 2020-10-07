@@ -14,6 +14,6 @@ void printEnv(char **arg, char **envp) {
     }
     if (getenv(arg[1]) != NULL) 
             printf(" %s\n", getenv(arg[1]));
-        else 
-            fprintf(stderr, "printenv: %s not found\n", arg[1]);
+    else 
+        fprintf(stderr, "printenv: %s not found\n", arg[1]);
 }

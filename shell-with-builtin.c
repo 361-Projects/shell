@@ -111,13 +111,12 @@ int main(int argc, char **argv, char **envp)
 			list(arg[1]);
 		}
 		else if (strcmp(arg[0], "where") == 0) {
-			struct pathelement *p, *tmp;
+			struct pathelement *p;
 			char *cmd;
 
 			printf("sssh: executing built-in [where]\n");
 
-			if (arg[1] == NULL)
-			{ // "empty" which
+			if (arg[1] == NULL) {
 				printf("where: Too few arguments.\n");
 				goto nextprompt;
 			}
@@ -125,10 +124,17 @@ int main(int argc, char **argv, char **envp)
 			p = get_path();
 			if(where(arg[1], p) == 0)
 				printf("where: %s not found\n", arg[1]);
+			free(p);
 		}
 		else if (strcmp(arg[0], "printenv") == 0) {
 			printf("sssh: executing built-in [printenv]\n");
 			printEnv(arg, envp);
+		}
+		else if (strcmp(arg[0], "setenv") == 0) {
+			printf("sssh: executing built-in [setenv]\n");
+			struct pathelement *p = get_path();
+			setEnv(arg, envp, p);
+			free(p);
 		}
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
