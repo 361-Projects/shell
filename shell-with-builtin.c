@@ -21,9 +21,9 @@ int main(int argc, char **argv, char **envp)
 	int status, i, arg_no;
 
 	if (prompt_prefix != NULL)
-		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+		fprintf(stdout, "%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 	else
-		printf("%s", prompt);
+		fprintf(stdout, "%s", prompt);
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -192,9 +192,11 @@ int main(int argc, char **argv, char **envp)
 
 	nextprompt:
 		if (prompt_prefix != NULL)
-			printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+			fprintf(stdout, "%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 		else
-			printf("%s", prompt);
+			fprintf(stdout, "%s", prompt);
 	}
+	// Freeing
+	free(last_dir);
 	exit(0);
 }
