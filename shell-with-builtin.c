@@ -44,8 +44,8 @@ int main(int argc, char **argv, char **envp)
 		if (strcmp(arg[0], "prompt") == 0)
 		{
 			//strcpy(prompt_prefix, set_prompt_prefix(arg));
-			char** toks = strtok(arg, " ");
-    		printf("%s", toks);
+			//char** toks = strtok(arg, " ");
+    		//printf("%s", toks);
 		}
 		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
@@ -101,6 +101,40 @@ int main(int argc, char **argv, char **envp)
 		else if (strcmp(arg[0], "pid") == 0) {
 			printf("sssh PID: %d\n", getpid());
 			goto nextprompt;
+		}
+		else if (strcmp(arg[0], "list") == 0) {
+			printf("sssh: Executing built in [list]\n");
+			if (arg[1] == NULL) {
+				list("");
+				goto nextprompt;
+			}
+			list(arg[1]);
+		}
+		else if (strcmp(arg[0], "where") == 0) {
+			struct pathelement *p;
+			char *cmd;
+
+			printf("sssh: executing built-in [where]\n");
+
+			if (arg[1] == NULL) {
+				printf("where: Too few arguments.\n");
+				goto nextprompt;
+			}
+
+			p = get_path();
+			if(where(arg[1], p) == 0)
+				printf("where: %s not found\n", arg[1]);
+			free(p);
+		}
+		else if (strcmp(arg[0], "printenv") == 0) {
+			printf("sssh: executing built-in [printenv]\n");
+			printEnv(arg, envp);
+		}
+		else if (strcmp(arg[0], "setenv") == 0) {
+			printf("sssh: executing built-in [setenv]\n");
+			struct pathelement *p = get_path();
+			setEnv(arg, envp, p);
+			free(p);
 		}
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
