@@ -126,6 +126,10 @@ int main(int argc, char **argv, char **envp)
 			if(where(arg[1], p) == 0)
 				printf("where: %s not found\n", arg[1]);
 		}
+		else if (strcmp(arg[0], "printenv") == 0) {
+			printf("sssh: executing built-in [printenv]\n");
+			printEnv(arg, envp);
+		}
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
 			exit(0);
