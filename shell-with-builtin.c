@@ -110,6 +110,22 @@ int main(int argc, char **argv, char **envp)
 			}
 			list(arg[1]);
 		}
+		else if (strcmp(arg[0], "where") == 0) {
+			struct pathelement *p, *tmp;
+			char *cmd;
+
+			printf("sssh: executing built-in [where]\n");
+
+			if (arg[1] == NULL)
+			{ // "empty" which
+				printf("where: Too few arguments.\n");
+				goto nextprompt;
+			}
+
+			p = get_path();
+			if(where(arg[1], p) == 0)
+				printf("where: %s not found\n", arg[1]);
+		}
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
 			exit(0);
