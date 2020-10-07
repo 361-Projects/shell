@@ -1,19 +1,18 @@
 #include "set_prompt_prefix.h"
 
-char* set_prompt_prefix(char** arg, char** prefix) {
-    // for(int i = 0; arg[i] != NULL; i++)
-    // {
-    //     printf("%s\n", arg[i]);
-    // }
-    //printf("%ld", sizeof(arg));
+void set_prompt_prefix(char** arg, char* prefix) {
+    memset(prefix, 0, 128); // clear the prefix
     if (arg[1] != NULL) {
-        free(*prefix);
-        *prefix = (char*)malloc(sizeof(arg));
         for (int i = 1; arg[i] != NULL; i++) {
-            strcat(*prefix, arg[i]);
-            strcat(*prefix, " ");
+            strcat(prefix, arg[i]);
+            strcat(prefix, " ");
         }
-        printf("%s\n", *prefix);
+    } else {
+        char buf[128];
+        printf("Enter prompt prefix: ");
+        fgets(buf, 128, stdin);
+        buf[strlen(buf) - 1] = '\0';
+        strcat(buf, " ");
+        strcpy(prefix, buf);
     }
-    return 0;
 }

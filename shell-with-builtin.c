@@ -10,7 +10,7 @@ int main(int argc, char **argv, char **envp)
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
 	const char *prompt = ">> ";
-	char* prompt_prefix = NULL;
+	char prompt_prefix[MAXLINE];
 
 	char buf[MAXLINE];
 	char *arg[MAXARGS]; // an array of tokens
@@ -46,7 +46,7 @@ int main(int argc, char **argv, char **envp)
 
 		if (strcmp(arg[0], "prompt") == 0)
 		{
-			set_prompt_prefix(arg, &prompt_prefix);
+			set_prompt_prefix(arg, prompt_prefix);
 			//char* toks = strtok(arg, " "); // do it by len of arg; grab rest of user input from buff after the word "prompt" if too big
     		//printf("%s", toks);
 		}
@@ -141,7 +141,10 @@ int main(int argc, char **argv, char **envp)
 		}
 
 	nextprompt:
-		printf(">> ");
+		if (prompt_prefix != NULL)
+			printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+		else
+			printf("%s", prompt);
 	}
 	exit(0);
 }
