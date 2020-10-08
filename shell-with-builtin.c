@@ -61,8 +61,11 @@ int main(int argc, char **argv, char **envp)
 
 		if (strcmp(arg[0], "prompt") == 0)
 		{
-      printf("Executing built-in [prompt]\n");
+      		printf("Executing built-in [prompt]\n");
 			set_prompt_prefix(arg, prompt_prefix);
+		}
+		else if (strcmp(arg[0], "kill") == 0) {
+			kill_proc(arg);
 		}
 		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd

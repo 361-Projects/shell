@@ -4,6 +4,7 @@
 #include "./utils/where.h"
 #include "./utils/printenv.h"
 #include "./utils/setenv.h"
+#include "./utils/kill_proc.h"
 
 int pid;
 char *which(char *command, struct pathelement *pathlist);
