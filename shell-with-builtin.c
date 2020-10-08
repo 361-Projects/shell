@@ -34,7 +34,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		if (fgets(buf, MAXLINE, stdin) == NULL) {
 			// ignoring control-d, which is eof
-			printf(stdout, "Ignoring control-d, type \"exit\" to exit shell.");
+			fprintf(stdout, "Ignoring control-d, type \"exit\" to exit shell.");
 			continue;
 		}
 
