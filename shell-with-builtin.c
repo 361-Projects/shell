@@ -4,14 +4,21 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <glob.h>
+#include <signal.h>
 #include "sh.h"
+
+
+const char *prompt = ">> ";
+char prompt_prefix[MAXLINE];
 
 int main(int argc, char **argv, char **envp)
 {
-	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
+	// Signal stuff
+	sigignore(SIGTSTP);
+	sigignore(SIGTERM);
+	signal(SIGINT, signalHandler);
 
-	const char *prompt = ">> ";
-	char prompt_prefix[MAXLINE];
+	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
 	char buf[MAXLINE];
 	char *arg[MAXARGS + 1]; // an array of tokens
@@ -22,12 +29,15 @@ int main(int argc, char **argv, char **envp)
 	glob_t paths;
 	int status, i, arg_no, csource;
 
-	if (prompt_prefix != NULL)
-		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
-	else
-		printf("%s", prompt);
-	while (fgets(buf, MAXLINE, stdin) != NULL)
+	printPrompt();
+	while (1)
 	{
+		if (fgets(buf, MAXLINE, stdin) == NULL) {
+			// ignoring control-d, which is eof
+			printf(stdout, "Ignoring control-d, type \"exit\" to exit shell.");
+			continue;
+		}
+
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
 			goto nextprompt; // "empty" command line
 
@@ -208,10 +218,29 @@ int main(int argc, char **argv, char **envp)
 		}
 
 	nextprompt:
-		if (prompt_prefix != NULL)
-			printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
-		else
-			printf("%s", prompt);
+		printPrompt();
 	}
 	exit(0);
+}
+
+void printPrompt() {
+	if (prompt_prefix != NULL)
+		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+	else
+		printf("%s", prompt);
+}
+
+void signalHandler(int signal) {
+	if (signal == SIGINT) {
+		// handle control c (by ignoring it)
+		fprintf(stdout, "Ignoring control-c\n");
+		printPrompt();
+		fflush(stdout);
+	}
+}
+
+void childSignalHandler(int signal) {
+	if (signal == SIGCHLD) {
+		fprintf(stdout, "no\n");
+	}
 }

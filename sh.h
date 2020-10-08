@@ -10,6 +10,9 @@ int pid;
 char *which(char *command, struct pathelement *pathlist);
 void list(char *dir);
 void printenv(char **envp);
+void printPrompt();
+void signalHandler(int signal);
+void childSignalHandler(int signal);
 
 #define PROMPTMAX 64
 #define MAXARGS   16
