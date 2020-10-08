@@ -43,15 +43,14 @@ int main(int argc, char **argv, char **envp)
            		if (csource == 0) {
 					for (char **p = paths.gl_pathv; *p != NULL; p++) {
 						arg[arg_no] = (char *)malloc((int)strlen(*p)+1);
-						strcpy(arg[arg_no], *p);
+						strcpy(arg[arg_no++], *p);
 					}
                 	globfree(&paths);
 				}
 			}
 			else {
-				arg[arg_no] = pch;
+				arg[arg_no++] = pch;
 			}
-			arg_no++;
 			pch = strtok(NULL, " ");
 		}
 		arg[arg_no] = (char *)NULL;
