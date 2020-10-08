@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <glob.h>
 #include "sh.h"
 
 int main(int argc, char **argv, char **envp)
@@ -13,17 +14,18 @@ int main(int argc, char **argv, char **envp)
 	char prompt_prefix[MAXLINE];
 
 	char buf[MAXLINE];
-	char *arg[MAXARGS]; // an array of tokens
+	char *arg[MAXARGS + 1]; // an array of tokens
 	char *ptr;
 	char *pch;
 	char *last_dir = getcwd(NULL, 0);
 	pid_t pid;
-	int status, i, arg_no;
+	glob_t paths;
+	int status, i, arg_no, csource;
 
 	if (prompt_prefix != NULL)
-		fprintf(stdout, "%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 	else
-		fprintf(stdout, "%s", prompt);
+		printf("%s", prompt);
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -36,7 +38,19 @@ int main(int argc, char **argv, char **envp)
 		pch = strtok(buf, " ");
 		while (pch != NULL && arg_no < MAXARGS)
 		{
-			arg[arg_no] = pch;
+			if (strstr(pch, "*") != NULL) {
+				csource = glob(pch, 0, NULL, &paths);	   
+           		if (csource == 0) {
+					for (char **p = paths.gl_pathv; *p != NULL; p++) {
+						arg[arg_no] = (char *)malloc((int)strlen(*p)+1);
+						strcpy(arg[arg_no], *p);
+					}
+                	globfree(&paths);
+				}
+			}
+			else {
+				arg[arg_no] = pch;
+			}
 			arg_no++;
 			pch = strtok(NULL, " ");
 		}
@@ -192,11 +206,9 @@ int main(int argc, char **argv, char **envp)
 
 	nextprompt:
 		if (prompt_prefix != NULL)
-			fprintf(stdout, "%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+			printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
 		else
-			fprintf(stdout, "%s", prompt);
+			printf("%s", prompt);
 	}
-	// Freeing
-	free(last_dir);
 	exit(0);
 }
