@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <glob.h>
 #include "sh.h"
 
 int main(int argc, char **argv, char **envp)
@@ -10,16 +11,21 @@ int main(int argc, char **argv, char **envp)
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
 	const char *prompt = ">> ";
-	char prompt_prefix[MAXLINE] = "";
+	char prompt_prefix[MAXLINE];
 
 	char buf[MAXLINE];
-	char *arg[MAXARGS]; // an array of tokens
+	char *arg[MAXARGS + 1]; // an array of tokens
 	char *ptr;
 	char *pch;
+	char *last_dir = getcwd(NULL, 0);
 	pid_t pid;
-	int status, i, arg_no;
+	glob_t paths;
+	int status, i, arg_no, csource;
 
-	printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+	if (prompt_prefix != NULL)
+		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+	else
+		printf("%s", prompt);
 	while (fgets(buf, MAXLINE, stdin) != NULL)
 	{
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -32,7 +38,19 @@ int main(int argc, char **argv, char **envp)
 		pch = strtok(buf, " ");
 		while (pch != NULL && arg_no < MAXARGS)
 		{
-			arg[arg_no] = pch;
+			if (strstr(pch, "*") != NULL) {
+				csource = glob(pch, 0, NULL, &paths);	   
+           		if (csource == 0) {
+					for (char **p = paths.gl_pathv; *p != NULL; p++) {
+						arg[arg_no] = (char *)malloc((int)strlen(*p)+1);
+						strcpy(arg[arg_no], *p);
+					}
+                	globfree(&paths);
+				}
+			}
+			else {
+				arg[arg_no] = pch;
+			}
 			arg_no++;
 			pch = strtok(NULL, " ");
 		}
@@ -43,9 +61,11 @@ int main(int argc, char **argv, char **envp)
 
 		if (strcmp(arg[0], "prompt") == 0)
 		{
-			//strcpy(prompt_prefix, set_prompt_prefix(arg));
-			//char** toks = strtok(arg, " ");
-    		//printf("%s", toks);
+      		printf("Executing built-in [prompt]\n");
+			set_prompt_prefix(arg, prompt_prefix);
+		}
+		else if (strcmp(arg[0], "kill") == 0) {
+			kill_proc(arg);
 		}
 		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
@@ -58,8 +78,24 @@ int main(int argc, char **argv, char **envp)
 		{
 			// cd cmd
 			printf("Executing built-in [cd]\n");
-			printf("%s\n", arg[1]);
-			int success = chdir(arg[1]);
+			int success;
+			if (arg[1] == NULL) {
+				// cd with nothing passed in
+				free(last_dir);
+				last_dir = getcwd(NULL, 0);
+				success = chdir(getenv("HOME"));
+			}
+			else if (strcmp(arg[1], "-") == 0) {
+				// cd to previous dir
+				success = chdir(last_dir);
+				free(last_dir);
+				last_dir = getcwd(NULL, 0);
+			} else {
+				// normal path in cd
+				free(last_dir);
+				last_dir = getcwd(NULL, 0);
+				success = chdir(arg[1]);
+			}
 			if (success >= 0) {
 				printf("Directory change successful\n");
 			} else {
@@ -172,7 +208,10 @@ int main(int argc, char **argv, char **envp)
 		}
 
 	nextprompt:
-		printf(">> ");
+		if (prompt_prefix != NULL)
+			printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
+		else
+			printf("%s", prompt);
 	}
 	exit(0);
 }

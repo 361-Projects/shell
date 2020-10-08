@@ -1,8 +1,18 @@
 #include "set_prompt_prefix.h"
 
-char* set_prompt_prefix(char** arg) {
-    char* toks = strtok(arg, " ");
-    printf("%s", toks);
-
-    return "hi";
+void set_prompt_prefix(char** arg, char* prefix) {
+    memset(prefix, 0, 128); // clear the prefix
+    if (arg[1] != NULL) {
+        for (int i = 1; arg[i] != NULL; i++) {
+            strcat(prefix, arg[i]);
+            strcat(prefix, " ");
+        }
+    } else {
+        char buf[128];
+        printf("Enter prompt prefix: ");
+        fgets(buf, 128, stdin);
+        buf[strlen(buf) - 1] = '\0';
+        strcat(buf, " ");
+        strcpy(prefix, buf);
+    }
 }
