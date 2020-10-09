@@ -192,9 +192,16 @@ int main(int argc, char **argv, char **envp)
 		}
 		else if (strcmp(arg[0], "setenv") == 0) {
 			printf("sssh: executing built-in [setenv]\n");
-			struct pathelement *p = get_path();
+			struct pathelement *p, *tmp;
+			p = get_path();
 			setEnv(arg, envp, p);
-			free(p);
+			
+			while (p) { // free list of path values
+				tmp = p;
+				p = p->next;
+				free(tmp->element);
+				free(tmp);
+			}
 		}
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
