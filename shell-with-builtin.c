@@ -262,10 +262,4 @@ void signalHandler(int signal) {
 void childSignalHandler(int signal) {
 	int status;
 	int child = waitpid(pid, &status, 0);
-
-	if (WIFEXITED(status)) {
-		printf("Child (%d) terminated normally with status (%d)(%d)\n", child, status, WEXITSTATUS(status));
-	} else if (WIFSIGNALED(status)) {
-		printf("Child (%d) terminated by signal with status (%d)(%d)\n", child, status, WTERMSIG(status));
-	}
 }
