@@ -14,11 +14,12 @@ char prompt_prefix[MAXLINE];
 int main(int argc, char **argv, char **envp)
 {
 	// Signal stuff
-	sigignore(SIGTSTP);
-	sigignore(SIGTERM);
+	//sigignore(SIGTSTP); these 2 lines are not doing anything and compiling gives me warnings, so i made it ignore in the signal handler instead
+	//sigignore(SIGTERM);
 	signal(SIGINT, signalHandler);
-	//signal(SIGTERM, signalHandler);
-	//signal(SIGTSTP, signalHandler);
+	signal(SIGTERM, signalHandler);
+	signal(SIGTSTP, signalHandler);
+	signal(SIGCHLD, childSignalHandler);
 
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
@@ -246,7 +247,12 @@ void signalHandler(int signal) {
 }
 
 void childSignalHandler(int signal) {
-	if (signal == SIGCHLD) {
-		fprintf(stdout, "no\n");
+	int status;
+	int child = waitpid(pid, &status, 0);
+
+	if (WIFEXITED(status)) {
+		printf("Child (%d) terminated normally with status (%d)(%d)\n", child, status, WEXITSTATUS(status));
+	} else if (WIFSIGNALED(status)) {
+		printf("Child (%d) terminated by signal with status (%d)(%d)\n", child, status, WTERMSIG(status));
 	}
 }
