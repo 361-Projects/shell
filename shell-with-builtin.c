@@ -192,6 +192,7 @@ int main(int argc, char **argv, char **envp)
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
 			free(last_dir);
+			free(arg);
 			exit(0);
 		}
 		else
@@ -229,6 +230,7 @@ int main(int argc, char **argv, char **envp)
 		printPrompt();
 	}
 	free(last_dir);
+	free(arg);
 	exit(0);
 }
 
