@@ -87,6 +87,7 @@ int main(int argc, char **argv, char **envp)
 			set_prompt_prefix(arg, prompt_prefix);
 		}
 		else if (strcmp(arg[0], "kill") == 0) {
+			printf("sssh: executing built-in [kill]\n");
 			kill_proc(arg);
 		}
 		else if (strcmp(arg[0], "pwd") == 0)
@@ -258,6 +259,12 @@ int main(int argc, char **argv, char **envp)
 	exit(0);
 }
 
+/* Name: printPrompt
+ * Args: void
+ * Return: void
+ * Description: Prints the prompt for the shell either with the prefix or without depending on if the prefix
+ * has been set or not
+ */
 void printPrompt() {
 	if (prompt_prefix != NULL)
 		printf("%s%s", prompt_prefix, prompt); /* print prompt (printf requires %% to print %) */
@@ -265,6 +272,11 @@ void printPrompt() {
 		printf("%s", prompt);
 }
 
+/* Name: signalHandler
+ * Args: int signal - the signal id
+ * Return: void
+ * Description: This handles 3 signals, SIGINT, SIGTERM, and SIGTSTP and ignores them as per instructions
+ */
 void signalHandler(int signal) {
 	if (signal == SIGINT) {
 		// handle control c (by ignoring it)

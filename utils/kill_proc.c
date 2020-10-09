@@ -8,6 +8,12 @@
 
 #include "kill_proc.h"
 
+/* Name: kill_proc
+ * Args: char** args - the arguments passed into the shell
+ * Return: void
+ * Description: Based on the args, it will take the process ID given and kill that process. You can specify 
+ * the specific signal sent to the process via a '-X' where X is the signal ID
+ */
 void kill_proc(char** args) {
     int pid;
     int signal;
