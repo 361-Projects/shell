@@ -14,11 +14,11 @@ char prompt_prefix[MAXLINE];
 int main(int argc, char **argv, char **envp)
 {
 	// Signal stuff
-	//sigignore(SIGTSTP);
-	//sigignore(SIGTERM);
+	sigignore(SIGTSTP);
+	sigignore(SIGTERM);
 	signal(SIGINT, signalHandler);
-	signal(SIGTERM, signalHandler);
-	signal(SIGTSTP, signalHandler);
+	//signal(SIGTERM, signalHandler);
+	//signal(SIGTSTP, signalHandler);
 
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
