@@ -37,7 +37,7 @@ int main(int argc, char **argv, char **envp)
 		if (fgets(buf, MAXLINE, stdin) == NULL) {
 			// ignoring control-d, which is eof
 			fprintf(stdout, "Ignoring control-d, type \"exit\" to exit shell.\n");
-			continue;
+			goto nextprompt;
 		}
 
 		if (strlen(buf) == 1 && buf[strlen(buf) - 1] == '\n')
@@ -238,11 +238,7 @@ void signalHandler(int signal) {
 		fprintf(stdout, "    Ignoring control-c\n");
 		printPrompt();
 		fflush(stdout);
-	} else if (signal == SIGTSTP) {
-		fprintf(stdout, "    Ignoring control-z\n");
-		printPrompt();
-		fflush(stdout);
-	} else if (signal == SIGTERM) {
+	} else if (signal == SIGTERM || signal == SIGTSTP) {
 		fprintf(stdout, "    Ignoring control-z\n");
 		printPrompt();
 		fflush(stdout);
