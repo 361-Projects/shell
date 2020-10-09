@@ -22,7 +22,6 @@ int main(int argc, char **argv, char **envp)
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);
 	signal(SIGTSTP, signalHandler);
-	signal(SIGCHLD, childSignalHandler);
 
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
@@ -262,9 +261,4 @@ void signalHandler(int signal) {
 		printPrompt();
 		fflush(stdout);
 	}
-}
-
-void childSignalHandler(int signal) {
-	int status;
-	int child = waitpid(pid, &status, 0);
 }
