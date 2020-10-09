@@ -1,3 +1,11 @@
+/********************************************************
+ * PROGRAM: Shell			                            *
+ * CLASS: CISC 361-011                                  *
+ * AUTHORS:                                             *
+ *    Alex Sederquest | alexsed@udel.edu | 702414270    *
+ *    Ben Segal | bensegal@udel.edu | 702425559         *
+ ********************************************************/
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -195,7 +203,7 @@ int main(int argc, char **argv, char **envp)
 			struct pathelement *p, *tmp;
 			p = get_path();
 			setEnv(arg, envp, p);
-			
+
 			while (p) { // free list of path values
 				tmp = p;
 				p = p->next;

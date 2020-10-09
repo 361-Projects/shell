@@ -1,10 +1,11 @@
-/*
-  get_path.c
-  Ben Miller
+/********************************************************
+ * PROGRAM: Shell			                            *
+ * CLASS: CISC 361-011                                  *
+ * AUTHORS:                                             *
+ *    Alex Sederquest | alexsed@udel.edu | 702414270    *
+ *    Ben Segal | bensegal@udel.edu | 702425559         *
+ ********************************************************/
 
-  Just a little sample function that gets the PATH env var, parses it and
-  puts "components" into a linked list, which is returned.
-*/
 #include "get_path.h"
 
 struct pathelement *get_path()
