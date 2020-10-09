@@ -227,6 +227,7 @@ int main(int argc, char **argv, char **envp)
 	nextprompt:
 		printPrompt();
 	}
+	free(last_dir);
 	exit(0);
 }
 
