@@ -14,9 +14,11 @@ char prompt_prefix[MAXLINE];
 int main(int argc, char **argv, char **envp)
 {
 	// Signal stuff
-	sigignore(SIGTSTP);
-	sigignore(SIGTERM);
+	//sigignore(SIGTSTP);
+	//sigignore(SIGTERM);
 	signal(SIGINT, signalHandler);
+	signal(SIGTERM, signalHandler);
+	signal(SIGTSTP, signalHandler);
 
 	printf("Welcome to sssh\nThe shell so bad it will make you mad\n");
 
@@ -34,7 +36,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		if (fgets(buf, MAXLINE, stdin) == NULL) {
 			// ignoring control-d, which is eof
-			fprintf(stdout, "Ignoring control-d, type \"exit\" to exit shell.");
+			fprintf(stdout, "Ignoring control-d, type \"exit\" to exit shell.\n");
 			continue;
 		}
 
@@ -233,7 +235,15 @@ void printPrompt() {
 void signalHandler(int signal) {
 	if (signal == SIGINT) {
 		// handle control c (by ignoring it)
-		fprintf(stdout, "Ignoring control-c\n");
+		fprintf(stdout, "    Ignoring control-c\n");
+		printPrompt();
+		fflush(stdout);
+	} else if (signal == SIGTSTP) {
+		fprintf(stdout, "    Ignoring control-z\n");
+		printPrompt();
+		fflush(stdout);
+	} else if (signal == SIGTERM) {
+		fprintf(stdout, "    Ignoring control-z\n");
 		printPrompt();
 		fflush(stdout);
 	}
