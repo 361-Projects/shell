@@ -226,6 +226,8 @@ int main(int argc, char **argv, char **envp)
 		}
 
 	nextprompt:
+		for(int i = arg_no - 1; i >= 0; i--)
+			free(arg[i]);
 		printPrompt();
 	}
 	free(last_dir);
