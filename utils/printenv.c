@@ -9,6 +9,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* printEnv
+ * Args: char **arg: arguments | char **envp: shell enviroment
+ * Returns: void
+ * Decription: Prints an enviroment variable if one is given or all of them is none is given
+ */
 void printEnv(char **arg, char **envp) {
     if (arg[2] != NULL) {
         fprintf(stderr, "%s", "printenv: too many arugments\n");

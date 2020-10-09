@@ -8,6 +8,13 @@
 
 #include "get_path.h"
 
+/* where
+ * Args:
+ *      char *command: The command to be searched
+ *      struct pathelement *p: a linked list of the path
+ * Returns: int: the number of times the command was found in the path
+ * Decription: Prints all occurnces of command found in p
+ */
 int where(char *command, struct pathelement *p) {
     char cmd[64], *ch;
     int found;

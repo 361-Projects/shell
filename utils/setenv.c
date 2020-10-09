@@ -11,6 +11,14 @@
 #include <string.h>
 #include "get_path.h"
 
+/* setEnv
+ * Args: 
+ *      char **arg: args passed in from the shell
+ *      char **envp: shell enviroment
+ *      struct pathelement *pathList: a linked list of the path
+ * Returns: int: status of if the path changed
+ * Decription: allows an envirnment variable to be set
+ */
 int setEnv(char **arg, char **envp, struct pathelement *pathList) {
     int pathChanged = 0;
     if (arg[3] != NULL){

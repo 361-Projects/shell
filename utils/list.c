@@ -8,6 +8,11 @@
 
 #include "list.h"
 
+/* Name: list
+ * Args: char *dir | Directory to be listed
+ * Return: void
+ * Decription: Lists a direcotry to stdout from dir or uses the cwd if an empty string is passed in
+ */
 void list(char *dir) {
     DIR *dp;
     struct dirent *dirp;
