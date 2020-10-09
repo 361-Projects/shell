@@ -12,6 +12,7 @@ void list(char *dir) {
         while ((dirp = readdir(dp)) != NULL)
             printf(" %s\n", dirp->d_name);
         free(cwd);
+        closedir(dp);
     }
     else {
         if ((dp = opendir(dir)) == NULL) {
