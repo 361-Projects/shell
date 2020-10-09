@@ -43,15 +43,14 @@ int main(int argc, char **argv, char **envp)
            		if (csource == 0) {
 					for (char **p = paths.gl_pathv; *p != NULL; p++) {
 						arg[arg_no] = (char *)malloc((int)strlen(*p)+1);
-						strcpy(arg[arg_no], *p);
+						strcpy(arg[arg_no++], *p);
 					}
                 	globfree(&paths);
 				}
 			}
 			else {
-				arg[arg_no] = pch;
+				arg[arg_no++] = pch;
 			}
-			arg_no++;
 			pch = strtok(NULL, " ");
 		}
 		arg[arg_no] = (char *)NULL;
@@ -61,7 +60,7 @@ int main(int argc, char **argv, char **envp)
 
 		if (strcmp(arg[0], "prompt") == 0)
 		{
-      		printf("Executing built-in [prompt]\n");
+      		printf("sssh: executing built-in [prompt]\n");
 			set_prompt_prefix(arg, prompt_prefix);
 		}
 		else if (strcmp(arg[0], "kill") == 0) {
@@ -69,7 +68,7 @@ int main(int argc, char **argv, char **envp)
 		}
 		else if (strcmp(arg[0], "pwd") == 0)
 		{ // built-in command pwd
-			printf("Executing built-in [pwd]\n");
+			printf("ssshL executing built-in [pwd]\n");
 			ptr = getcwd(NULL, 0);
 			printf("%s\n", ptr);
 			free(ptr);
@@ -77,7 +76,7 @@ int main(int argc, char **argv, char **envp)
 		else if (strcmp(arg[0], "cd") == 0)
 		{
 			// cd cmd
-			printf("Executing built-in [cd]\n");
+			printf("sssh: executing built-in [cd]\n");
 			int success;
 			if (arg[1] == NULL) {
 				// cd with nothing passed in
@@ -107,7 +106,7 @@ int main(int argc, char **argv, char **envp)
 			struct pathelement *p, *tmp;
 			char *cmd;
 
-			printf("Executing built-in [which]\n");
+			printf("sssh: executing built-in [which]\n");
 
 			if (arg[1] == NULL)
 			{ // "empty" which
@@ -117,14 +116,15 @@ int main(int argc, char **argv, char **envp)
 
 			p = get_path();
 
-			cmd = which(arg[1], p);
-			if (cmd)
-			{
-				printf("%s\n", cmd);
-				free(cmd);
+			for (int i = 1; arg[i] != NULL; i++) {
+				cmd = which(arg[i], p);
+				if (cmd) {
+					printf("%s\n", cmd);
+					free(cmd);
+				}
+				else // argument not found
+					printf("which: %s not found\n", arg[i]);
 			}
-			else // argument not found
-				printf("%s: Command not found\n", arg[1]);
 
 			while (p)
 			{ // free list of path values
@@ -158,8 +158,12 @@ int main(int argc, char **argv, char **envp)
 			}
 
 			p = get_path();
-			if(where(arg[1], p) == 0)
-				printf("where: %s not found\n", arg[1]);
+
+			for (int i = 1; arg[i] != NULL; i++) {
+				if(where(arg[i], p) == 0)
+					printf("where: %s not found\n", arg[i]);
+			}
+
 			free(p);
 		}
 		else if (strcmp(arg[0], "printenv") == 0) {

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "get_path.h"
 
 int setEnv(char **arg, char **envp, struct pathelement *pathList) {
     int pathChanged = 0;
