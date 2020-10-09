@@ -163,8 +163,7 @@ int main(int argc, char **argv, char **envp)
 			list(arg[1]);
 		}
 		else if (strcmp(arg[0], "where") == 0) {
-			struct pathelement *p;
-			char *cmd;
+			struct pathelement *p, *tmp;
 
 			printf("sssh: executing built-in [where]\n");
 
@@ -180,7 +179,13 @@ int main(int argc, char **argv, char **envp)
 					printf("where: %s not found\n", arg[i]);
 			}
 
-			free(p);
+			while (p)
+			{ // free list of path values
+				tmp = p;
+				p = p->next;
+				free(tmp->element);
+				free(tmp);
+			}
 		}
 		else if (strcmp(arg[0], "printenv") == 0) {
 			printf("sssh: executing built-in [printenv]\n");
