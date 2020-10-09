@@ -8,6 +8,12 @@
 
 #include "set_prompt_prefix.h"
 
+/* Name: set_prompt_prefix
+ * Args: char** args - the arguments passed into the shell, char* prefix - the pointer to the prefix variable
+ * Return: void
+ * Description: It either sets the prefix to the passed in prefix via arg from the cmd line or this will
+ * prompt the user to enter the prefix and then set it.
+ */
 void set_prompt_prefix(char** arg, char* prefix) {
     memset(prefix, 0, 128); // clear the prefix
     if (arg[1] != NULL) {
