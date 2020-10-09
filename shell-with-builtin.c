@@ -192,6 +192,8 @@ int main(int argc, char **argv, char **envp)
 		else if (strcmp(arg[0], "exit") == 0) {
 			printf("Exiting as requested\n");
 			free(last_dir);
+			for(int i = arg_no - 1; i >= 0; i--)
+				free(arg[i]);
 			exit(0);
 		}
 		else
